@@ -1,0 +1,30 @@
+{
+  "name": "user-data",
+  "version": "1.0.0",
+  "description": "A microservice to manage the user data",
+  "main": "index.ts",
+  "scripts": {
+    "generate-types": "openapi-typescript ./src/user-data.openapi.yml -o ./src/types.g.d.ts",
+    "build": "tsc && cp ./src/user-data.openapi.yml ./dist/user-data.openapi.yml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mapeak-com/user-data.git"
+  },
+  "author": "Harel Mazor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mapeak-com/user-data/issues"
+  },
+  "homepage": "https://github.com/Mapeak-com/user-data#readme",
+  "devDependencies": {
+    "openapi-typescript": "^7.10.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "^9.2.1",
+    "express": "^5.2.1",
+    "express-openapi-validator": "^5.6.2",
+    "lru-cache": "^11.2.5"
+  }
+}
