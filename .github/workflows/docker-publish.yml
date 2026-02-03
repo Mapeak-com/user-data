@@ -28,5 +28,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v4
-      - run: docker build -t ghcr.io/mapeak/user-data:latest .
-      - run: docker push ghcr.io/mapeak/user-data:latest
+      - run: docker build -t ghcr.io/mapeak-com/user-data:latest .
+      - run: docker push ghcr.io/mapeak-com/user-data:latest
