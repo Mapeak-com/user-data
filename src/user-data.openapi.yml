@@ -18,6 +18,16 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
     put:
       tags:
         - Urls

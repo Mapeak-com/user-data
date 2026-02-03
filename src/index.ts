@@ -1,10 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
-import * as elasticGateway from './elastic';
-import { components } from './types.g';
+import * as elasticGateway from './elastic.js';
+import { components } from './types.g.js';
 import { middleware } from 'express-openapi-validator';
-import { authenticate } from './auth';
+import { authenticate } from './auth.js';
+
+import cors from 'cors';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.use(
@@ -102,7 +105,7 @@ const uploadImagesIfNeeded = async (shareUrl: ShareUrl) => {
     // Should be async and not await-ed in main flow
 };
 
-app.get('/api/Urls/:id', async (req: Request, res: Response, next: NextFunction) => {
+app.get('/api/urls/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
 
@@ -122,7 +125,7 @@ app.get('/api/Urls/:id', async (req: Request, res: Response, next: NextFunction)
     }
 });
 
-app.get('/api/Urls/:id/timestamp', async (req: Request, res: Response, next: NextFunction) => {
+app.get('/api/urls/:id/timestamp', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
         const timestamp = await elasticGateway.getUrlTimestampById(id);
@@ -133,7 +136,7 @@ app.get('/api/Urls/:id/timestamp', async (req: Request, res: Response, next: Nex
     }
 });
 
-app.get('/api/Urls/:id/thumbnail', async (req: Request, res: Response, next: NextFunction) => {
+app.get('/api/urls/:id/thumbnail', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
         const shareUrl = await elasticGateway.getUrlById(id);
@@ -155,7 +158,7 @@ app.get('/api/Urls/:id/thumbnail', async (req: Request, res: Response, next: Nex
     }
 });
 
-app.get('/api/Urls', async (req: Request, res: Response, next: NextFunction) => {
+app.get('/api/urls', async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.user || !req.user.osmUserId) {
             return res.status(401).json({ message: 'Unauthorized' });
@@ -176,7 +179,7 @@ app.get('/api/Urls', async (req: Request, res: Response, next: NextFunction) => 
     }
 });
 
-app.post('/api/Urls', async (req: Request, res: Response, next: NextFunction) => {
+app.post('/api/urls', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const shareUrl = req.body as ShareUrl;
         if (!shareUrl) return res.status(400).send("Share object in body is required");
@@ -215,7 +218,7 @@ app.post('/api/Urls', async (req: Request, res: Response, next: NextFunction) =>
     }
 });
 
-app.put('/api/Urls/:id', async (req: Request, res: Response, next: NextFunction) => {
+app.put('/api/urls/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
         const incoming = req.body as ShareUrl;
@@ -249,7 +252,7 @@ app.put('/api/Urls/:id', async (req: Request, res: Response, next: NextFunction)
     }
 });
 
-app.delete('/api/Urls/:id', async (req: Request, res: Response, next: NextFunction) => {
+app.delete('/api/urls/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.id as string;
 
@@ -276,6 +279,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         message: err.message,
         errors: err.errors,
     });
+    console.log(req.url + " : " + err.message);
 });
 
 const PORT = process.env.PORT || 3000;

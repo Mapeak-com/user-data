@@ -1,5 +1,5 @@
 import { Client } from '@elastic/elasticsearch';
-import { components } from './types.g';
+import { components } from './types.g.js';
 
 type ShareUrl = components['schemas']['ShareUrl'];
 type MapLayerData = components['schemas']['MapLayerData'];
