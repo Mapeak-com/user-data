@@ -4,8 +4,9 @@
   "description": "A microservice to manage the user data",
   "main": "index.ts",
   "scripts": {
-    "generate-types": "openapi-typescript ./src/user-data.openapi.yml -o ./src/types.g.d.ts",
-    "build": "tsc && cp ./src/user-data.openapi.yml ./dist/user-data.openapi.yml"
+    "generate-json": "js-yaml ./user-data.openapi.yml > ./src/user-data.openapi.json",
+    "generate-types": "openapi-typescript ./user-data.openapi.yml -o ./src/types.g.d.ts",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,8 @@
   "homepage": "https://github.com/Mapeak-com/user-data#readme",
   "devDependencies": {
     "@types/cors": "^2.8.19",
+    "@types/swagger-ui-express": "^4.1.8",
+    "js-yaml": "^4.1.1",
     "openapi-typescript": "^7.10.1",
     "typescript": "^5.9.3"
   },
@@ -27,6 +30,7 @@
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "express-openapi-validator": "^5.6.2",
-    "lru-cache": "^11.2.5"
+    "lru-cache": "^11.2.5",
+    "swagger-ui-express": "^5.0.1"
   }
 }

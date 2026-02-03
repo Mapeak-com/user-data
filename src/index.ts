@@ -1,18 +1,21 @@
 import express, { Request, Response, NextFunction } from 'express';
+import { middleware } from 'express-openapi-validator';
+import swaggerUi from 'swagger-ui-express';
 import * as elasticGateway from './elastic.js';
 import { components } from './types.g.js';
-import { middleware } from 'express-openapi-validator';
 import { authenticate } from './auth.js';
+import apiDocs from './user-data.openapi.json';
 
 import cors from 'cors';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
 
 app.use(
     middleware({
-        apiSpec: './user-data.openapi.yml',
+        apiSpec: apiDocs as any,
         validateRequests: true,
         validateResponses: true,
     }),
@@ -284,6 +287,12 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
+    console.log(`Server starting on port ${PORT}`);
     await elasticGateway.initialize();
-    console.log(`Server validation active on port ${PORT}`);
+    console.log(`Server started on port ${PORT}`);
+});
+
+process.on('SIGINT', function () {
+    console.log("Gracefully shutting down from SIGINT (Ctrl-C)");
+    process.exit();
 });
