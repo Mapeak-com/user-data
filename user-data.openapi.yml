@@ -1,0 +1,524 @@
+openapi: 3.0.1
+info:
+  title: Mapeak User Data
+  version: 1.0.0
+paths:
+  /api/Urls/{id}:
+    get:
+      tags:
+        - Urls
+      summary: Returns the data relevant to a given shared route
+      parameters:
+        - name: id
+          in: path
+          description: The shared route ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+    put:
+      tags:
+        - Urls
+      summary: Update a shared route
+      parameters:
+        - name: id
+          in: path
+          description: The shared route's ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The new shared route data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShareUrl'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ShareUrl'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ShareUrl'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+      security:
+        - Bearer: []
+    delete:
+      tags:
+        - Urls
+      summary: Deletes the shared route.
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+      security:
+        - Bearer: []
+  /api/Urls/{id}/timestamp:
+    get:
+      tags:
+        - Urls
+      summary: Returns the last modified timestamp relevant to a given shared route
+      parameters:
+        - name: id
+          in: path
+          description: The shared route ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: date-time
+            application/json:
+              schema:
+                type: string
+                format: date-time
+            text/json:
+              schema:
+                type: string
+                format: date-time
+  /api/Urls/{id}/thumbnail:
+    get:
+      tags:
+        - Urls
+      summary: >-
+        Creates an image for the relevant shared route in the database if the
+        image was not created
+      parameters:
+        - name: id
+          in: path
+          description: The share route ID
+          required: true
+          schema:
+            type: string
+        - name: width
+          in: query
+          description: Optional - the width of the image
+          schema:
+            type: integer
+            format: int32
+        - name: height
+          in: query
+          description: Optional - the height of the image
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+  /api/Urls:
+    get:
+      tags:
+        - Urls
+      summary: Get all shared routes for a specific user
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShareUrl'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShareUrl'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShareUrl'
+      security:
+        - Bearer: []
+    post:
+      tags:
+        - Urls
+      summary: Adds a shared route, user ID is optional
+      requestBody:
+        description: The shared route's data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShareUrl'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ShareUrl'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ShareUrl'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ShareUrl'
+  /api/UserLayers:
+    get:
+      tags:
+        - UserLayers
+      summary: Gets the user's custom layers
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MapLayerData'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MapLayerData'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MapLayerData'
+      security:
+        - Bearer: []
+    post:
+      tags:
+        - UserLayers
+      summary: Adds a custom user layer to database
+      requestBody:
+        description: The map layer to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MapLayerData'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/MapLayerData'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/MapLayerData'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/MapLayerData'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapLayerData'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/MapLayerData'
+      security:
+        - Bearer: []
+  /api/UserLayers/{id}:
+    put:
+      tags:
+        - UserLayers
+      summary: Updates a custom user layer
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MapLayerData'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/MapLayerData'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/MapLayerData'
+      responses:
+        '200':
+          description: OK
+      security:
+        - Bearer: []
+    delete:
+      tags:
+        - UserLayers
+      summary: Deletes a custom user layer
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+      security:
+        - Bearer: []
+components:
+  schemas:
+    DataContainerPoco:
+      type: object
+      properties:
+        routes:
+          type: array
+          items:
+            $ref: '#/components/schemas/RouteData'
+          nullable: true
+        northEast:
+          $ref: '#/components/schemas/LatLngAlt'
+        southWest:
+          $ref: '#/components/schemas/LatLngAlt'
+        baseLayer:
+          $ref: '#/components/schemas/LayerData'
+        overlays:
+          type: array
+          items:
+            $ref: '#/components/schemas/LayerData'
+          nullable: true
+      additionalProperties: false
+    LatLngAlt:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: double
+        lng:
+          type: number
+          format: double
+        alt:
+          type: number
+          format: double
+          nullable: true
+      additionalProperties: false
+    LatLngTime:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: double
+        lng:
+          type: number
+          format: double
+        alt:
+          type: number
+          format: double
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+    LayerData:
+      type: object
+      properties:
+        key:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        minZoom:
+          type: integer
+          format: int32
+          nullable: true
+        maxZoom:
+          type: integer
+          format: int32
+          nullable: true
+        opacity:
+          type: number
+          format: double
+          nullable: true
+      additionalProperties: false
+    LinkData:
+      type: object
+      properties:
+        url:
+          type: string
+          nullable: true
+        text:
+          type: string
+          nullable: true
+        mimeType:
+          type: string
+          nullable: true
+      additionalProperties: false
+    MapLayerData:
+      type: object
+      properties:
+        key:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        minZoom:
+          type: integer
+          format: int32
+          nullable: true
+        maxZoom:
+          type: integer
+          format: int32
+          nullable: true
+        opacity:
+          type: number
+          format: double
+          nullable: true
+        id:
+          type: string
+          nullable: true
+        osmUserId:
+          type: string
+          nullable: true
+        isOverlay:
+          type: boolean
+      additionalProperties: false
+    MarkerData:
+      type: object
+      properties:
+        latlng:
+          $ref: '#/components/schemas/LatLngAlt'
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        urls:
+          type: array
+          items:
+            $ref: '#/components/schemas/LinkData'
+          nullable: true
+      additionalProperties: false
+    RouteData:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        color:
+          type: string
+          nullable: true
+        opacity:
+          type: number
+          format: double
+          nullable: true
+        weight:
+          type: integer
+          format: int32
+          nullable: true
+        markers:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarkerData'
+          nullable: true
+        segments:
+          type: array
+          items:
+            $ref: '#/components/schemas/RouteSegmentData'
+          nullable: true
+      additionalProperties: false
+    RouteSegmentData:
+      type: object
+      properties:
+        routingType:
+          type: string
+          nullable: true
+        routePoint:
+          $ref: '#/components/schemas/LatLngAlt'
+        latlngs:
+          type: array
+          items:
+            $ref: '#/components/schemas/LatLngTime'
+          nullable: true
+      additionalProperties: false
+    ShareUrl:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        osmUserId:
+          type: string
+          nullable: true
+        viewsCount:
+          type: integer
+          format: int32
+        creationDate:
+          type: string
+          format: date-time
+        lastModifiedDate:
+          type: string
+          format: date-time
+        lastViewed:
+          type: string
+          format: date-time
+        dataContainer:
+          $ref: '#/components/schemas/DataContainerPoco'
+        base64Preview:
+          type: string
+          nullable: true
+      additionalProperties: false
+  securitySchemes:
+    Bearer:
+      type: http
+      description: >-
+        JWT Authorization header using the Bearer scheme - need OSM OAuth2 token
+      scheme: bearer
