@@ -27,6 +27,7 @@ app.use('/api', authenticate);
 
 type ShareUrl = components['schemas']['ShareUrl'];
 type MapLayerData = components['schemas']['MapLayerData'];
+type LinkData = components["schemas"]["LinkData"];
 
 // --- UserLayers ---
 
@@ -102,10 +103,42 @@ function fixModifiedDate(shareUrl: ShareUrl) {
     }
 }
 
-// Stub for background image upload
 const uploadImagesIfNeeded = async (shareUrl: ShareUrl) => {
-    // console.log(`Uploading images for share: ${shareUrl.id}`);
-    // Should be async and not await-ed in main flow
+    const uploadPromises = [];
+
+    for (const route of shareUrl.dataContainer?.routes || []) {
+        for (const marker of route?.markers || []) {
+            for (let url of marker?.urls || []) {
+                if (url?.url?.startsWith('data:image')) {
+                    uploadPromises.push(uploadImageAndUpdateLink(url));
+                }
+            }
+        }
+    }
+
+    Promise.all(uploadPromises).then(() => {
+        elasticGateway.updateUrl(shareUrl);
+    });
+};
+
+const uploadImageAndUpdateLink = async (url: LinkData) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Client-ID " + process.env.IMGUR_CLIENT_ID);
+
+    var formdata = new FormData();
+    const res = await fetch(url.url!);
+    const imageBlob = await res.blob();
+    formdata.append("image", imageBlob);
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: formdata,
+    };
+
+    const response = await fetch("https://api.imgur.com/3/image", requestOptions);
+    const result = await response.json();
+    url.url = result.data.link;
 };
 
 app.get('/api/urls/:id', async (req: Request, res: Response, next: NextFunction) => {
