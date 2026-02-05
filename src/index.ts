@@ -13,6 +13,10 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
 
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+});
+
 app.use(
     middleware({
         apiSpec: apiDocs as any,
