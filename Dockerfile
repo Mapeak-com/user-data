@@ -7,8 +7,6 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 
-RUN npm run generate-json
-RUN npm run generate-types
 RUN npm run build
 
 FROM node:24-alpine

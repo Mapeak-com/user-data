@@ -6,7 +6,8 @@
   "scripts": {
     "generate-json": "js-yaml ./user-data.openapi.yml > ./src/user-data.openapi.json",
     "generate-types": "openapi-typescript ./user-data.openapi.yml -o ./src/types.g.d.ts",
-    "build": "tsc"
+    "build": "npm run generate-json && npm run generate-types && tsc",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",

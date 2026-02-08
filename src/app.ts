@@ -253,11 +253,22 @@ app.put('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
         existing.title = incoming.title;
         existing.description = incoming.description;
         existing.lastModifiedDate = new Date().toISOString();
-
+        if (incoming.gain) {
+            existing.gain = incoming.gain;
+        }
+        if (incoming.loss) {
+            existing.loss = incoming.loss;
+        }
+        if (incoming.length) {
+            existing.length = incoming.length;
+        }
+        if (incoming.website) {
+            existing.website = incoming.website;
+        }
         if (incoming.dataContainer) {
             existing.dataContainer = incoming.dataContainer;
         }
-        if (incoming.base64Preview && incoming.base64Preview !== '') {
+        if (incoming.base64Preview) {
             existing.base64Preview = incoming.base64Preview;
         }
 
