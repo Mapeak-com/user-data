@@ -307,9 +307,9 @@ components:
             $ref: '#/components/schemas/RouteData'
           nullable: true
         northEast:
-          $ref: '#/components/schemas/LatLngAlt'
+          $ref: '#/components/schemas/LatLngAltTime'
         southWest:
-          $ref: '#/components/schemas/LatLngAlt'
+          $ref: '#/components/schemas/LatLngAltTime'
         baseLayer:
           $ref: '#/components/schemas/LayerData'
         overlays:
@@ -318,29 +318,11 @@ components:
             $ref: '#/components/schemas/LayerData'
           nullable: true
       additionalProperties: false
-    LatLngAlt:
-      type: object
-      required:
-        - lat
-        - lng
-      properties:
-        lat:
-          type: number
-          format: double
-        lng:
-          type: number
-          format: double
-        alt:
-          type: number
-          format: double
-          nullable: true
-      additionalProperties: false
     LatLngAltTime:
       type: object
       required:
         - lat
         - lng
-        - timestamp
       properties:
         lat:
           type: number
@@ -426,7 +408,7 @@ components:
       type: object
       properties:
         latlng:
-          $ref: '#/components/schemas/LatLngAlt'
+          $ref: '#/components/schemas/LatLngAltTime'
         title:
           type: string
           nullable: true
@@ -487,7 +469,7 @@ components:
             - 4WD
             - None
         routePoint:
-          $ref: '#/components/schemas/LatLngAlt'
+          $ref: '#/components/schemas/LatLngAltTime'
         latlngs:
           type: array
           items:
