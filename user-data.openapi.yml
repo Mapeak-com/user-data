@@ -474,7 +474,11 @@ components:
       properties:
         routingType:
           type: string
-          nullable: true
+          enum:
+            - Hike
+            - Bike
+            - 4WD
+            - None
         routePoint:
           $ref: '#/components/schemas/LatLngAlt'
         latlngs:
