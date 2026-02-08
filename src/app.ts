@@ -1,11 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { middleware } from 'express-openapi-validator';
 import swaggerUi from 'swagger-ui-express';
+import cors from 'cors';
+
 import * as elasticGateway from './elastic.js';
 import { components } from './types.g.js';
 import { authenticate } from './auth.js';
+import { uploadImageAndUpdateLink } from './imgur.js';
 import apiDocs from './user-data.openapi.json';
-import cors from 'cors';
 
 export const app = express();
 app.use(cors());
@@ -32,7 +34,6 @@ app.use('/api', authenticate);
 
 type ShareUrl = components['schemas']['ShareUrl'];
 type MapLayerData = components['schemas']['MapLayerData'];
-type LinkData = components["schemas"]["LinkData"];
 
 // --- UserLayers ---
 
@@ -93,7 +94,7 @@ app.delete('/api/UserLayers/:id', async (req: Request, res: Response, next: Next
 
 // --- Urls (ShareUrl) ---
 
-const getRandomString = (length: number) => {
+function getRandomString(length: number) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     for (let i = 0; i < length; i++) {
@@ -101,12 +102,6 @@ const getRandomString = (length: number) => {
     }
     return result;
 };
-
-function fixModifiedDate(shareUrl: ShareUrl) {
-    if (shareUrl.lastModifiedDate! < shareUrl.creationDate!) {
-        shareUrl.lastModifiedDate = shareUrl.creationDate;
-    }
-}
 
 const uploadImagesIfNeeded = async (shareUrl: ShareUrl) => {
     const uploadPromises = [];
@@ -124,26 +119,6 @@ const uploadImagesIfNeeded = async (shareUrl: ShareUrl) => {
     Promise.all(uploadPromises).then(() => {
         elasticGateway.updateUrl(shareUrl);
     });
-};
-
-const uploadImageAndUpdateLink = async (url: LinkData) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Client-ID " + process.env.IMGUR_CLIENT_ID);
-
-    var formdata = new FormData();
-    const res = await fetch(url.url!);
-    const imageBlob = await res.blob();
-    formdata.append("image", imageBlob);
-
-    var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: formdata,
-    };
-
-    const response = await fetch("https://api.imgur.com/3/image", requestOptions);
-    const result = await response.json();
-    url.url = result.data.link;
 };
 
 app.get('/api/urls/:id', async (req: Request, res: Response, next: NextFunction) => {
@@ -223,6 +198,8 @@ app.get('/api/urls', async (req: Request, res: Response, next: NextFunction) => 
 app.post('/api/urls', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const shareUrl = req.body as ShareUrl;
+        // HM TODO: remove this.
+        console.log("Adding a share", JSON.stringify(shareUrl, null, 2));
         if (!shareUrl) return res.status(400).send("Share object in body is required");
 
         const currentUserId = req.user?.osmUserId;
