@@ -268,6 +268,9 @@ app.put('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
         if (incoming.difficulty) {
             existing.difficulty = incoming.difficulty;
         }
+        if (incoming.type) {
+            existing.type = incoming.type;
+        }
         if (incoming.dataContainer) {
             existing.dataContainer = incoming.dataContainer;
         }
