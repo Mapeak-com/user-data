@@ -15,7 +15,7 @@ const client = new Client({
     node: ES_URL,
 });
 
-export const initialize = async () => {
+export async function initialize() {
     console.log(`Initializing Elasticsearch at ${ES_URL}`);
 
     const sharesExists = await client.indices.exists({ index: INDICES.SHARE_URLS });
@@ -33,7 +33,7 @@ export const initialize = async () => {
 
 // --- ShareUrl Methods ---
 
-export const addUrl = async (shareUrl: ShareUrl): Promise<void> => {
+export async function addUrl(shareUrl: ShareUrl): Promise<void> {
     await client.index({
         index: INDICES.SHARE_URLS,
         id: shareUrl.id!,
@@ -42,7 +42,7 @@ export const addUrl = async (shareUrl: ShareUrl): Promise<void> => {
     });
 };
 
-export const getUrlById = async (id: string): Promise<ShareUrl | null> => {
+export async function getUrlById(id: string): Promise<ShareUrl | null> {
     try {
         const result = await client.get<ShareUrl>({
             index: INDICES.SHARE_URLS,
@@ -55,7 +55,7 @@ export const getUrlById = async (id: string): Promise<ShareUrl | null> => {
     }
 };
 
-export const getUrlTimestampById = async (id: string): Promise<string | null> => {
+export async function getUrlTimestampById(id: string): Promise<string | null> {
     try {
         const result = await client.get<ShareUrl>({
             index: INDICES.SHARE_URLS,
@@ -80,7 +80,7 @@ export const getUrlTimestampById = async (id: string): Promise<string | null> =>
     }
 };
 
-export const getUrlsByUser = async (osmUserId: string): Promise<ShareUrl[]> => {
+export async function getUrlsByUser(osmUserId: string): Promise<ShareUrl[]> {
     const result = await client.search<ShareUrl>({
         index: INDICES.SHARE_URLS,
         size: 5000,
@@ -96,7 +96,7 @@ export const getUrlsByUser = async (osmUserId: string): Promise<ShareUrl[]> => {
     return result.hits.hits.map(h => h._source!);
 };
 
-export const deleteUrl = async (id: string): Promise<void> => {
+export async function deleteUrl(id: string): Promise<void> {
     await client.delete({
         index: INDICES.SHARE_URLS,
         id: id,
@@ -104,11 +104,11 @@ export const deleteUrl = async (id: string): Promise<void> => {
     });
 };
 
-export const updateUrl = async (shareUrl: ShareUrl): Promise<void> => {
+export async function updateUrl(shareUrl: ShareUrl): Promise<void> {
     await addUrl(shareUrl);
 };
 
-export const updateUrlStats = async (id: string, viewsCount: number, lastViewed: string): Promise<void> => {
+export async function updateUrlStats(id: string, viewsCount: number, lastViewed: string): Promise<void> {
     await client.update({
         index: INDICES.SHARE_URLS,
         id: id,
@@ -121,7 +121,7 @@ export const updateUrlStats = async (id: string, viewsCount: number, lastViewed:
 
 // --- UserLayers Methods ---
 
-export const getUserLayers = async (osmUserId: string): Promise<MapLayerData[]> => {
+export async function getUserLayers(osmUserId: string): Promise<MapLayerData[]> {
     const result = await client.search<MapLayerData>({
         index: INDICES.USER_LAYERS,
         size: 1000,
@@ -139,7 +139,7 @@ export const getUserLayers = async (osmUserId: string): Promise<MapLayerData[]> 
     });
 };
 
-export const getUserLayerById = async (id: string): Promise<MapLayerData | null> => {
+export async function getUserLayerById(id: string): Promise<MapLayerData | null> {
     try {
         const result = await client.get<MapLayerData>({
             index: INDICES.USER_LAYERS,
@@ -154,7 +154,7 @@ export const getUserLayerById = async (id: string): Promise<MapLayerData | null>
     }
 };
 
-export const addUserLayer = async (layer: MapLayerData): Promise<MapLayerData> => {
+export async function addUserLayer(layer: MapLayerData): Promise<MapLayerData> {
     const response = await client.index({
         index: INDICES.USER_LAYERS,
         id: layer.id || undefined,
@@ -165,7 +165,7 @@ export const addUserLayer = async (layer: MapLayerData): Promise<MapLayerData> =
     return layer;
 };
 
-export const updateUserLayer = async (layer: MapLayerData): Promise<void> => {
+export async function updateUserLayer(layer: MapLayerData): Promise<void> {
     await client.index({
         index: INDICES.USER_LAYERS,
         id: layer.id!,
@@ -174,7 +174,7 @@ export const updateUserLayer = async (layer: MapLayerData): Promise<void> => {
     });
 };
 
-export const deleteUserLayer = async (id: string): Promise<void> => {
+export async function deleteUserLayer(id: string): Promise<void> {
     await client.delete({
         index: INDICES.USER_LAYERS,
         id: id,
