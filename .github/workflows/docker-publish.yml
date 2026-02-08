@@ -27,6 +27,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v4
-      - run: docker build -t ghcr.io/mapeak-com/user-data:latest .
-      - run: docker push ghcr.io/mapeak-com/user-data:latest
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/mapeak-com/user-data:latest
+          platforms: linux/amd64,linux/arm64
