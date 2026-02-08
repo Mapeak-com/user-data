@@ -298,7 +298,7 @@ paths:
         - Bearer: []
 components:
   schemas:
-    DataContainerPoco:
+    DataContainer:
       type: object
       properties:
         routes:
@@ -511,7 +511,7 @@ components:
           type: string
           format: date-time
         dataContainer:
-          $ref: '#/components/schemas/DataContainerPoco'
+          $ref: '#/components/schemas/DataContainer'
         base64Preview:
           type: string
           nullable: true
