@@ -198,8 +198,6 @@ app.get('/api/urls', async (req: Request, res: Response, next: NextFunction) => 
 app.post('/api/urls', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const shareUrl = req.body as ShareUrl;
-        // HM TODO: remove this.
-        console.log("Adding a share", JSON.stringify(shareUrl, null, 2));
         if (!shareUrl) return res.status(400).send("Share object in body is required");
 
         const currentUserId = req.user?.osmUserId;
