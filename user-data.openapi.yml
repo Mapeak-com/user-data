@@ -320,6 +320,9 @@ components:
       additionalProperties: false
     LatLngAlt:
       type: object
+      required:
+        - lat
+        - lng
       properties:
         lat:
           type: number
@@ -332,8 +335,12 @@ components:
           format: double
           nullable: true
       additionalProperties: false
-    LatLngTime:
+    LatLngAltTime:
       type: object
+      required:
+        - lat
+        - lng
+        - timestamp
       properties:
         lat:
           type: number
@@ -484,7 +491,7 @@ components:
         latlngs:
           type: array
           items:
-            $ref: '#/components/schemas/LatLngTime'
+            $ref: '#/components/schemas/LatLngAltTime'
           nullable: true
       additionalProperties: false
     ShareUrl:
