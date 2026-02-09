@@ -9,6 +9,7 @@ import * as elasticGateway from './elastic.js';
 import { components } from './types.g.js';
 import { authenticate } from './auth.js';
 import { uploadImageAndUpdateLink } from './imgur.js';
+import { isPartner } from './partners.js';
 import apiDocs from './user-data.openapi.json';
 
 export const app = express();
@@ -278,7 +279,7 @@ app.put('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
             existing.circular = incoming.circular;
         }
         if (typeof incoming.public === 'boolean') {
-            existing.public = incoming.public;
+            existing.public = incoming.public && isPartner(req.user.osmUserId);
         }
         if (incoming.dataContainer) {
             existing.dataContainer = incoming.dataContainer;
@@ -322,19 +323,8 @@ app.delete('/api/urls/:id', async (req: Request, res: Response, next: NextFuncti
 app.get('/api/User/permissions', async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.user?.osmUserId) return res.status(401).json({ message: 'Unauthorized' });
-
-        const partnersPath = path.join(process.cwd(), 'partners.json');
-        if (!fs.existsSync(partnersPath)) {
-            res.json({
-                canPublishPublic: false
-            });
-            return;
-        }
-        const partnersData = fs.readFileSync(partnersPath, 'utf-8');
-        const partners = JSON.parse(partnersData) as string[];
-
         res.json({
-            canPublishPublic: partners.includes(String(req.user.osmUserId))
+            canPublishPublic: isPartner(req.user.osmUserId)
         });
     } catch (error) {
         next(error);
