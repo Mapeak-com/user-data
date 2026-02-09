@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import { middleware } from 'express-openapi-validator';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
 
 import * as elasticGateway from './elastic.js';
 import { components } from './types.g.js';
@@ -253,6 +255,7 @@ app.put('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
         existing.title = incoming.title;
         existing.description = incoming.description;
         existing.lastModifiedDate = new Date().toISOString();
+
         if (incoming.gain) {
             existing.gain = incoming.gain;
         }
@@ -270,6 +273,12 @@ app.put('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
         }
         if (incoming.type) {
             existing.type = incoming.type;
+        }
+        if (typeof incoming.circular === 'boolean') {
+            existing.circular = incoming.circular;
+        }
+        if (typeof incoming.public === 'boolean') {
+            existing.public = incoming.public;
         }
         if (incoming.dataContainer) {
             existing.dataContainer = incoming.dataContainer;
@@ -302,6 +311,31 @@ app.delete('/api/urls/:id', async (req: Request, res: Response, next: NextFuncti
 
         await elasticGateway.deleteUrl(id);
         res.sendStatus(200);
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+// --- User Permissions ---
+
+app.get('/api/User/permissions', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.user?.osmUserId) return res.status(401).json({ message: 'Unauthorized' });
+
+        const partnersPath = path.join(process.cwd(), 'partners.json');
+        if (!fs.existsSync(partnersPath)) {
+            res.json({
+                canPublishPublic: false
+            });
+            return;
+        }
+        const partnersData = fs.readFileSync(partnersPath, 'utf-8');
+        const partners = JSON.parse(partnersData) as string[];
+
+        res.json({
+            canPublishPublic: partners.includes(String(req.user.osmUserId))
+        });
     } catch (error) {
         next(error);
     }

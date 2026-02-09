@@ -296,6 +296,26 @@ paths:
           description: OK
       security:
         - Bearer: []
+  /api/User/permissions:
+    get:
+      tags:
+        - User
+      summary: Check if user has permission to publish public share URLs
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UserPermissions'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPermissions'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UserPermissions'
+      security:
+        - Bearer: []
 components:
   schemas:
     DataContainer:
@@ -523,6 +543,9 @@ components:
         public:
           type: boolean
           nullable: true
+        circular:
+          type: boolean
+          nullable: true
         difficulty:
           type: string
           enum:
@@ -542,6 +565,13 @@ components:
         website:
           type: string
           nullable: true
+      additionalProperties: false
+    UserPermissions:
+      type: object
+      properties:
+        canPublishPublic:
+          type: boolean
+          description: Whether the user is allowed to publish public share URLs
       additionalProperties: false
   securitySchemes:
     Bearer:
