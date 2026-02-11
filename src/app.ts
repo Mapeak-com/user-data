@@ -78,7 +78,7 @@ app.put('/api/UserLayers/:id', async (req: Request, res: Response, next: NextFun
         layer.osmUserId = req.user.osmUserId;
 
         await elasticGateway.updateUserLayer(layer);
-        res.sendStatus(200);
+        res.status(200).send('');
     } catch (error) {
         next(error);
     }
@@ -89,7 +89,7 @@ app.delete('/api/UserLayers/:id', async (req: Request, res: Response, next: Next
         if (!req.user?.osmUserId) return res.status(401).json({ message: 'Unauthorized' });
         const id = req.params.id as string;
         await elasticGateway.deleteUserLayer(id);
-        res.sendStatus(200);
+        res.status(200).send('');
     } catch (error) {
         next(error);
     }
@@ -311,7 +311,7 @@ app.delete('/api/urls/:id', async (req: Request, res: Response, next: NextFuncti
         }
 
         await elasticGateway.deleteUrl(id);
-        res.sendStatus(200);
+        res.status(200).send('');
     } catch (error) {
         next(error);
     }
