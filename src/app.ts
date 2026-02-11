@@ -284,7 +284,7 @@ app.put('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
         if (incoming.dataContainer) {
             existing.dataContainer = incoming.dataContainer;
         }
-        if (incoming.base64Preview) {
+        if (incoming.base64Preview && incoming.base64Preview.startsWith('data:image')) {
             existing.base64Preview = incoming.base64Preview;
         }
 
