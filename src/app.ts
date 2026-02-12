@@ -2,8 +2,6 @@ import express, { Request, Response, NextFunction } from 'express';
 import { middleware } from 'express-openapi-validator';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
-import fs from 'fs';
-import path from 'path';
 
 import * as elasticGateway from './elastic.js';
 import { components } from './types.g.js';
@@ -286,6 +284,9 @@ app.put('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
         }
         if (incoming.base64Preview && incoming.base64Preview.startsWith('data:image')) {
             existing.base64Preview = incoming.base64Preview;
+        }
+        if (incoming.start) {
+            existing.start = incoming.start;
         }
 
         await elasticGateway.updateUrl(existing);
