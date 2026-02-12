@@ -170,7 +170,7 @@ app.get('/api/urls/:id/thumbnail', async (req: Request, res: Response, next: Nex
             });
             res.end(img);
         } else {
-            res.status(501).json({ message: 'Image generation not implemented' });
+            res.status(404).json({ message: 'Image not found' });
         }
     } catch (error) {
         next(error);
@@ -330,6 +330,51 @@ app.get('/api/User/permissions', async (req: Request, res: Response, next: NextF
         next(error);
     }
 });
+
+// --- Public Routes ---
+
+app.get('/api/PublicRoutes', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const urls = await elasticGateway.getPublicUrls();
+        const features = urls.map(url => {
+            return {
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: [url.start?.lng, url.start?.lat]
+                },
+                properties: {
+                    poiCategory: url.type,
+                    poiSource: "Users",
+                    poiIcon: url.type === "Hiking" ? "icon-hike" : url.type === "Biking" ? "icon-bike" : url.type === "4x4" ? "icon-four-by-four" : "icon-question",
+                    poiIconColor: "black",
+                    poiLength: url.length,
+                    poiDifficulty: url.difficulty,
+                    poiId: "Users_" + url.id,
+                    identifier: url.id,
+                    name: url.title,
+                    description: url.description,
+                    website: url.website,
+                    image: "https://mapeak.com/api/urls/" + url.id + "/thumbnail"
+                }
+            }
+        })
+        const json = JSON.stringify({
+            type: "FeatureCollection",
+            features: features
+        });
+        res.attachment("public-routes.geojson");
+        res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Content-Length': json.length
+        });
+        res.end(json);
+    } catch (error) {
+        next(error);
+    }
+});
+
+// --- Error Handling ---
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     res.status(err.status || 500).json({

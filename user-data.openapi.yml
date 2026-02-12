@@ -316,6 +316,27 @@ paths:
                 $ref: '#/components/schemas/UserPermissions'
       security:
         - Bearer: []
+  /api/PublicRoutes:
+    get:
+      tags:
+        - PublicRoutes
+      summary: Gets the public routes
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: string
+                format: binary
+            text/json:
+              schema:
+                type: string
+                format: binary
 components:
   schemas:
     DataContainer:
@@ -532,6 +553,7 @@ components:
           type: number
           format: float
           nullable: true
+          description: The total length of the route in meters
         gain:
           type: number
           format: float
@@ -565,6 +587,10 @@ components:
         website:
           type: string
           nullable: true
+          description: The website of the route
+        start:
+          $ref: '#/components/schemas/LatLngAltTime'
+          description: The start point of the route
       additionalProperties: false
     UserPermissions:
       type: object

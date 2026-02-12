@@ -96,6 +96,22 @@ export async function getUrlsByUser(osmUserId: string): Promise<ShareUrl[]> {
     return result.hits.hits.map(h => h._source!);
 };
 
+export async function getPublicUrls(): Promise<ShareUrl[]> {
+    const result = await client.search<ShareUrl>({
+        index: INDICES.SHARE_URLS,
+        size: 10000,
+        query: {
+            term: {
+                "public": true
+            }
+        },
+        _source: {
+            excludes: ['dataContainer', 'base64Preview']
+        }
+    });
+    return result.hits.hits.map(h => h._source!);
+};
+
 export async function deleteUrl(id: string): Promise<void> {
     await client.delete({
         index: INDICES.SHARE_URLS,
