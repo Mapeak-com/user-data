@@ -370,7 +370,7 @@ app.get('/api/PublicRoutes', async (req: Request, res: Response, next: NextFunct
         res.attachment("public-routes.geojson");
         res.writeHead(200, {
             'Content-Type': 'application/json',
-            'Content-Length': json.length
+            'Content-Length': Buffer.byteLength(json)
         });
         res.end(json);
     } catch (error) {
