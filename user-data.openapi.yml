@@ -139,6 +139,15 @@ paths:
       responses:
         '200':
           description: OK
+        '404':
+          description: Share URL or Image not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
   /api/Urls:
     get:
       tags:

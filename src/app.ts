@@ -158,7 +158,10 @@ app.get('/api/urls/:id/thumbnail', async (req: Request, res: Response, next: Nex
         const id = req.params.id as string;
         const shareUrl = await elasticGateway.getUrlById(id);
 
-        if (!shareUrl) return res.sendStatus(404);
+        if (!shareUrl) {
+            res.status(404).json({ message: 'Share URL not found' });
+            return;
+        }
 
         if (shareUrl.base64Preview) {
             const img = Buffer.from(shareUrl.base64Preview.split(',')[1], 'base64');
