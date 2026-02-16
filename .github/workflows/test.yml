@@ -12,10 +12,11 @@ jobs:
     
     services:
       elasticsearch:
-        image: elasticsearch:8.11.0
+        image: elasticsearch:7.17.8
         env:
           discovery.type: single-node
-          xpack.security.enabled: false
+          xpack.security.enabled: "false"
+          ES_JAVA_OPTS: "-Xms512m -Xmx512m"
         ports:
           - 9200:9200
         options: >-
