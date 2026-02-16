@@ -512,12 +512,14 @@ components:
       type: object
       properties:
         routingType:
-          type: string
-          enum:
-            - Hike
-            - Bike
-            - 4WD
-            - None
+          anyOf:
+            - type: string
+              enum:
+                - Hike
+                - Bike
+                - 4WD
+                - None
+            - enum: [null]
         routePoint:
           $ref: '#/components/schemas/LatLngAltTime'
         latlngs:

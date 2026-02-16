@@ -1,0 +1,28 @@
+@host = http://localhost:3000
+@token = TEST_TOKEN
+
+###
+# @name GetUserLayers - check empty initially
+GET {{host}}/api/UserLayers
+Authorization: Bearer {{token}}
+
+?? status == 200
+?? js Array.isArray(response.parsedBody)
+
+###
+# @name CreateUserLayer
+POST {{host}}/api/UserLayers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "key": "test-layer",
+    "address": "https://example.com/{z}/{x}/{y}.png",
+    "minZoom": 0,
+    "maxZoom": 18,
+    "opacity": 1.0,
+    "isOverlay": false
+}
+
+?? status == 200
+?? js response.parsedBody.key == test-layer
