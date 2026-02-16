@@ -25,4 +25,4 @@ Content-Type: application/json
 }
 
 ?? status == 200
-?? js response.parsedBody.key == "test-layer"
+?? js response.parsedBody.key == test-layer
