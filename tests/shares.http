@@ -25,6 +25,54 @@ Content-Type: application/json
 ?? js response.parsedBody.title == Test Route
 
 ###
+# @name CreateShareNullRoutingType
+POST {{host}}/api/urls
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "title": "Null Routing Type",
+    "description": "A test route created by httpyac",
+    "type": "Hiking",
+    "difficulty": "Easy",
+    "public": true,
+    "osmUserId": "test-user",
+    "start": {
+        "lat": 32.0853,
+        "lng": 34.7818
+    },
+    "dataContainer": {
+        "routes": [
+            {
+                "segments": [{
+                    "routePoint": {
+                        "lat": 32.0853,
+                        "lng": 34.7818
+                    },
+                    "routingType": null,
+                    "latlngs": [{
+                        "lat": 32.0853,
+                        "lng": 34.7818
+                    }]
+                }],
+                "markers": [
+                    {
+                        "lat": 32.0853,
+                        "lng": 34.7818
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+?? status == 200
+?? js response.parsedBody.id.length > 0
+?? js response.parsedBody.title == Null Routing Type
+?? js response.parsedBody.dataContainer.routes.length == 1
+?? js response.parsedBody.dataContainer.routes[0].segments[0].routingType == null
+
+###
 # @name GetShare
 GET {{host}}/api/urls/{{CreateShare.id}}
 Authorization: Bearer {{token}}
