@@ -7,7 +7,7 @@ GET {{host}}/api/UserLayers
 Authorization: Bearer {{token}}
 
 ?? status == 200
-?? js Array.isArray(JSON.parse(response.body))
+?? js Array.isArray(response.body)
 
 ###
 # @name CreateUserLayer
@@ -25,4 +25,4 @@ Content-Type: application/json
 }
 
 ?? status == 200
-?? js JSON.parse(response.body).key == "test-layer"
+?? js response.body.key == "test-layer"
