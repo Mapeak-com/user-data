@@ -22,7 +22,7 @@ Content-Type: application/json
 
 ?? status == 200
 ?? js response.parsedBody.id.length > 0
-?? js response.parsedBody.title == "Test Route"
+?? js response.parsedBody.title == Test Route
 
 ###
 # @name GetShare
