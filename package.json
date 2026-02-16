@@ -6,6 +6,7 @@
   "scripts": {
     "generate-json": "js-yaml ./user-data.openapi.yml > ./src/user-data.openapi.json",
     "generate-types": "openapi-typescript ./user-data.openapi.yml -o ./src/types.g.d.ts",
+    "test:http": "httpyac ./tests/*.http --all",
     "build": "npm run generate-json && npm run generate-types && tsc",
     "start": "node dist/index.js"
   },
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/swagger-ui-express": "^4.1.8",
+    "httpyac": "^6.16.0",
     "js-yaml": "^4.1.1",
     "openapi-typescript": "^7.10.1",
     "typescript": "^5.9.3"
