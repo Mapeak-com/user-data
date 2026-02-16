@@ -21,8 +21,8 @@ Content-Type: application/json
 }
 
 ?? status == 200
-?? js response.body.id.length > 0
-?? js response.body.title == "Test Route"
+?? js JSON.parse(response.body).id.length > 0
+?? js JSON.parse(response.body).title == "Test Route"
 
 ###
 # @name GetShare
@@ -30,7 +30,7 @@ GET {{host}}/api/urls/{{CreateShare.id}}
 Authorization: Bearer {{token}}
 
 ?? status == 200
-?? js response.body.id == "{{CreateShare.id}}"
+?? js JSON.parse(response.body).id == "{{CreateShare.id}}"
 
 ###
 # @name GetShareThumbnail - Should fail (404) initially

@@ -5,4 +5,4 @@
 GET {{host}}/health
 
 ?? status == 200
-?? js response.body.status == "ok"
+?? js JSON.parse(response.body).status == "ok"
