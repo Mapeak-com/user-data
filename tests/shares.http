@@ -30,7 +30,7 @@ GET {{host}}/api/urls/{{CreateShare.id}}
 Authorization: Bearer {{token}}
 
 ?? status == 200
-?? js response.parsedBody.id == "{{CreateShare.id}}"
+?? js response.parsedBody.id == {{CreateShare.id}}
 
 ###
 # @name GetShareThumbnail - Should fail (404) initially
