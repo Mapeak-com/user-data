@@ -519,7 +519,7 @@ components:
               - Bike
               - 4WD
               - None
-          - type: "null"
+          - type: null
         routePoint:
           $ref: '#/components/schemas/LatLngAltTime'
         latlngs:
