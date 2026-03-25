@@ -586,6 +586,7 @@ components:
             - Easy
             - Moderate
             - Hard
+            - Very Hard
           nullable: true
         type:
           type: string

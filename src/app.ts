@@ -355,10 +355,6 @@ app.get('/api/PublicRoutes', async (req: Request, res: Response, next: NextFunct
                     poiLength: url.length,
                     poiDifficulty: url.difficulty,
                     poiId: "Users_" + url.id,
-                    poiGeolocation: {
-                        lon: url.start?.lng,
-                        lat: url.start?.lat
-                    },
                     identifier: url.id,
                     name: url.title,
                     description: url.description,
