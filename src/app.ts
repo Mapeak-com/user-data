@@ -341,6 +341,19 @@ app.get('/api/PublicRoutes', async (req: Request, res: Response, next: NextFunct
     try {
         const urls = await elasticGateway.getPublicUrls();
         const features = urls.map(url => {
+            let poiIcon = "icon-question";
+            let poiCategory = "Other";
+            if (url.type === "Hiking") {
+                poiIcon = "icon-hike";
+                poiCategory = "Hiking";
+            } else if (url.type === "Biking") {
+                poiIcon = "icon-bike";
+                poiCategory = "Bicycle";
+            } else if (url.type === "4x4") {
+                poiIcon = "icon-four-by-four";
+                poiCategory = "4x4";
+            }
+
             return {
                 type: "Feature",
                 geometry: {
@@ -348,9 +361,9 @@ app.get('/api/PublicRoutes', async (req: Request, res: Response, next: NextFunct
                     coordinates: [url.start?.lng, url.start?.lat]
                 },
                 properties: {
-                    poiCategory: url.type,
+                    poiCategory: poiCategory,
                     poiSource: "Users",
-                    poiIcon: url.type === "Hiking" ? "icon-hike" : url.type === "Biking" ? "icon-bike" : url.type === "4x4" ? "icon-four-by-four" : "icon-question",
+                    poiIcon: poiIcon,
                     poiIconColor: "black",
                     poiLength: url.length,
                     poiDifficulty: url.difficulty,
