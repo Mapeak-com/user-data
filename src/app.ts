@@ -29,6 +29,21 @@ app.use(
     }),
 );
 
+/**
+ * Fixes the routing type for all segments in a share URL.
+ * It's not clear how these were created, but they need a fix nevertheless...
+ * @param shareUrl The share URL to fix.
+ */
+function fixRoutingType(shareUrl: ShareUrl) {
+    for (const route of shareUrl.dataContainer?.routes || []) {
+        for (const segment of route.segments || []) {
+            if (segment.routingType == null || segment.routingType.toLowerCase() === "null") {
+                segment.routingType = "Hike";
+            }
+        }
+    }
+}
+
 // Apply auth middleware to all routes starting with /api
 // Spec says security is applied, so we can apply globally after validator (which checks schema) but before handlers.
 app.use('/api', authenticate);
@@ -136,6 +151,8 @@ app.get('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
         // Partial update for stats
         await elasticGateway.updateUrlStats(id, shareUrl.viewsCount, now);
 
+        fixRoutingType(shareUrl);
+
         res.json(shareUrl);
     } catch (error) {
         next(error);
@@ -229,6 +246,8 @@ app.post('/api/urls', async (req: Request, res: Response, next: NextFunction) =>
         }
         shareUrl.id = id;
 
+        fixRoutingType(shareUrl);
+
         await elasticGateway.addUrl(shareUrl);
 
         uploadImagesIfNeeded(shareUrl);
@@ -291,6 +310,8 @@ app.put('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
         if (incoming.start) {
             existing.start = incoming.start;
         }
+
+        fixRoutingType(existing);
 
         await elasticGateway.updateUrl(existing);
         res.json(existing);
