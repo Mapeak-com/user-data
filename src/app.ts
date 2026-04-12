@@ -37,7 +37,9 @@ app.use(
 function fixRoutingType(shareUrl: ShareUrl) {
     for (const route of shareUrl.dataContainer?.routes || []) {
         for (const segment of route.segments || []) {
-            if (segment.routingType == null || segment.routingType.toLowerCase() === "null") {
+            if (segment.routingType == null ||
+                segment.routingType.toLowerCase() === "null" ||
+                segment.routingType.toLowerCase() == "") {
                 segment.routingType = "Hike";
             }
         }
