@@ -124,17 +124,6 @@ export async function updateUrl(shareUrl: ShareUrl): Promise<void> {
     await addUrl(shareUrl);
 };
 
-export async function updateUrlStats(id: string, viewsCount: number, lastViewed: string): Promise<void> {
-    await client.update({
-        index: INDICES.SHARE_URLS,
-        id: id,
-        doc: {
-            lastViewed: lastViewed,
-            viewsCount: viewsCount
-        }
-    });
-};
-
 // --- UserLayers Methods ---
 
 export async function getUserLayers(osmUserId: string): Promise<MapLayerData[]> {

@@ -146,13 +146,6 @@ app.get('/api/urls/:id', async (req: Request, res: Response, next: NextFunction)
         const shareUrl = await elasticGateway.getUrlById(id);
         if (!shareUrl) return res.sendStatus(404);
 
-        const now = new Date().toISOString();
-        shareUrl.lastViewed = now;
-        shareUrl.viewsCount = (shareUrl.viewsCount || 0) + 1;
-
-        // Partial update for stats
-        await elasticGateway.updateUrlStats(id, shareUrl.viewsCount, now);
-
         fixRoutingType(shareUrl);
 
         res.json(shareUrl);
