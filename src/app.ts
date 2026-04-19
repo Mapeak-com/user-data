@@ -384,6 +384,7 @@ app.get('/api/PublicRoutes', async (req: Request, res: Response, next: NextFunct
                     poiLength: url.length,
                     poiDifficulty: url.difficulty,
                     poiId: "Users_" + url.id,
+                    poiUserId: url.osmUserId,
                     identifier: url.id,
                     name: url.title,
                     description: url.description,
