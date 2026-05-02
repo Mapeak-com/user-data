@@ -416,5 +416,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
         message: err.message,
         errors: err.errors,
     });
-    console.log(req.url + " : " + err.message);
+    console.log(req.method + " " + req.url + " : " + err.message);
+    if (req.body) {
+        console.log("Body:\n" + JSON.stringify(req.body, null, 2));
+    }
 });
