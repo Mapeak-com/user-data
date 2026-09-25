@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import { middleware } from 'express-openapi-validator';
 import swaggerUi from 'swagger-ui-express';
 import cors from 'cors';
+import sharp from 'sharp';
+import { LRUCache } from 'lru-cache';
 
 import * as elasticGateway from './elastic.js';
 import { components } from './types.g.js';
@@ -9,6 +11,30 @@ import { authenticate } from './auth.js';
 import { uploadImageAndUpdateLink } from './imgur.js';
 import { isPartner } from './partners.js';
 import apiDocs from './user-data.openapi.json';
+
+type ShareUrl = components['schemas']['ShareUrl'];
+type MapLayerData = components['schemas']['MapLayerData'];
+
+// Link preview crawlers (WhatsApp in particular) ignore large images, so keep thumbnails small.
+const thumbnailCache = new LRUCache<string, Buffer>({
+    maxSize: 50 * 1024 * 1024,
+    sizeCalculation: (value) => value.length
+});
+
+async function getThumbnail(id: string, lastModifiedDate: string | undefined | null, base64Preview: string): Promise<Buffer> {
+    const cacheKey = `${id}_${lastModifiedDate}`;
+    const cached = thumbnailCache.get(cacheKey);
+    if (cached) return cached;
+    const original = Buffer.from(base64Preview.split(',')[1], 'base64');
+    const thumbnail = await sharp(original)
+        .rotate()
+        .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
+        .flatten({ background: '#ffffff' })
+        .jpeg({ quality: 80, mozjpeg: true })
+        .toBuffer();
+    thumbnailCache.set(cacheKey, thumbnail);
+    return thumbnail;
+};
 
 export const app = express();
 app.use(cors());
@@ -50,9 +76,6 @@ function fixRoutingType(shareUrl: ShareUrl) {
 // Apply auth middleware to all routes starting with /api
 // Spec says security is applied, so we can apply globally after validator (which checks schema) but before handlers.
 app.use('/api', authenticate);
-
-type ShareUrl = components['schemas']['ShareUrl'];
-type MapLayerData = components['schemas']['MapLayerData'];
 
 // --- UserLayers ---
 
@@ -172,17 +195,24 @@ app.get('/api/urls/:id/thumbnail', async (req: Request, res: Response, next: Nex
         const shareUrl = await elasticGateway.getUrlById(id);
 
         if (!shareUrl) {
+            if (req.method === 'HEAD') {
+                res.sendStatus(404);
+                return;
+            }
             res.status(404).json({ message: 'Share URL not found' });
             return;
         }
 
         if (shareUrl.base64Preview) {
-            const img = Buffer.from(shareUrl.base64Preview.split(',')[1], 'base64');
+            const img = await getThumbnail(id, shareUrl.lastModifiedDate, shareUrl.base64Preview);
             res.writeHead(200, {
-                'Content-Type': 'image/png',
-                'Content-Length': img.length
+                'Content-Type': 'image/jpeg',
+                'Content-Length': img.length,
+                'Cache-Control': 'public, max-age=3600'
             });
             res.end(img);
+        } else if (req.method === 'HEAD') {
+            res.sendStatus(404);
         } else {
             res.status(404).json({ message: 'Image not found' });
         }

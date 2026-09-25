@@ -111,6 +111,22 @@ paths:
                 type: string
                 format: date-time
   /api/Urls/{id}/thumbnail:
+    head:
+      tags:
+        - Urls
+      summary: Checks the image for the relevant shared route (used by link preview crawlers)
+      parameters:
+        - name: id
+          in: path
+          description: The share route ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Share URL or Image not found
     get:
       tags:
         - Urls
